@@ -1,11 +1,17 @@
 #include <stdio.h>
+#define N 20
+
+int myarray[N];
+int evensum = 0;
+
+void my_strcpy(char destination[], char source[]);
 
 int main(int argc, char *argv[])
 {
+    char destination[N];
+    char source[N] = "Hello World";
 
-    printf("%s\n", argv[0]);
-    printf("%s\n", argv[1]);
-    printf("%s\n", argv[2]);
+    my_strcpy(destination, source);
 
     return 0;
 }
