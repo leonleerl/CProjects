@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
 {
     char destination[N];
     char source[N] = "Hello World";
+    char month[] = {'1', 'a', '4'};
 
     my_strcpy(destination, source);
 
