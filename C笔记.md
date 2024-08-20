@@ -130,3 +130,21 @@ int main()
 }
 ```
 
+
+
+遍历字符数组
+
+```c
+int main(int argc, char *argv[])
+{
+
+    char arr[] = "hello\nworld";
+    for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
+    {
+        printf("%c\n", arr[i]);
+    }
+
+    return 0;
+}
+```
+
