@@ -216,6 +216,202 @@ int main()
 
 
 
+读取文件
+
+写法1，`ch == EOF`：
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+void fileRead()
+{
+    FILE *fp = fopen("./file.txt", "r");
+    if (fp == NULL)
+    {
+        perror("open file failed:");
+    }
+    while (1)
+    {
+        char ch = fgetc(fp);
+        if (ch == EOF)
+        {
+            break;
+        }
+        printf("%c", ch);
+    }
+
+    fclose(fp);
+}
+
+int main(int argc, char *argv[])
+{
+    fileRead();
+    return 0;
+}
+```
+
+写法2，用`feof`:
+
+```c
+v#include <stdio.h>
+#include <stdlib.h>
+
+void fileRead()
+{
+    FILE *fp = fopen("./file.txt", "r");
+    if (fp == NULL)
+    {
+        perror("open file failed:");
+    }
+    while (!feof(fp))
+    {
+        char ch = fgetc(fp);
+        printf("%c", ch);
+    }
+
+    fclose(fp);
+}
+
+int main(int argc, char *argv[])
+{
+    fileRead();
+    return 0;
+}
+```
+
+写单个字符
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+void fileWrite()
+{
+    FILE *fp = fopen("file2.txt", "w");
+    if (fp == NULL)
+    {
+        perror("Open Failed:");
+        return;
+    }
+    char ch = fputc('E', fp);
+    printf("%c", ch);
+}
+
+int main()
+{
+    fileWrite();
+    return 0;
+}
+```
+
+写一句话
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void fileWrite()
+{
+    FILE *fp = fopen("file2.txt", "w");
+    if (fp == NULL)
+    {
+        perror("Open Failed:");
+        return;
+    }
+    char str[] = "Hello file22222";
+    for (int i = 0; i < strlen(str); ++i)
+    {
+        char ch = fputc(str[i], fp);
+        printf("%c", ch);
+    }
+}
+
+int main()
+{
+    fileWrite();
+    return 0;
+}
+```
+
+写入一行并读取一行
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void fileReadWrite()
+{
+    FILE *fp = fopen("file3.txt", "w+");
+    if (fp == NULL)
+    {
+        perror("Open Failed:");
+    }
+    int fputsRes = fputs("Hello file3333", fp);
+    printf("result:%d\n", fputsRes);
+
+    rewind(fp); // 把光标移到开头
+    char buffer[128] = {0};
+    char *fgetsRes = fgets(buffer, sizeof(buffer), fp);
+    printf("Content:%s\n", fgetsRes);
+    fclose(fp);
+}
+
+int main()
+{
+    fileReadWrite();
+    return 0;
+}
+```
+
+写入多行并读取多行
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void fileReadWrite()
+{
+    FILE *fp = fopen("file3.txt", "w+");
+    if (fp == NULL)
+    {
+        perror("Open Failed:");
+        return;
+    }
+
+    // 写入多行内容
+    fputs("Hello, this is the first line.\n", fp);
+    fputs("This is the second line.\n", fp);
+    fputs("And here is the third line.\n", fp);
+
+    // 刷新缓冲区，确保内容写入到文件
+    fflush(fp);
+
+    // 将文件指针移到文件开头
+    rewind(fp);
+
+    // 读取并输出多行内容
+    char buffer[128];
+    while (fgets(buffer, sizeof(buffer), fp) != NULL)
+    {
+        printf("Content: %s", buffer);
+    }
+
+    fclose(fp);
+}
+
+int main()
+{
+    fileReadWrite();
+    return 0;
+}
+```
+
+
+
 
 
 
