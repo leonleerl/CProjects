@@ -38,6 +38,13 @@ void function(void)
 
 int main(int argc, char *argv[])
 {
-    function();
+    // function();
+    int x = 10;
+    int *p = &x;
+    printf("%d\n", x);
+    printf("%p\n", &x);
+    printf("%d\n", *p);
+    printf("%p\n", p);
+
     return 0;
 }
