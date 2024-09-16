@@ -1,4 +1,4 @@
-
+# 基础
 
 编译命令
 
@@ -417,4 +417,246 @@ int main()
 
 
 
+
+# 指针
+
+## 数组
+
+注意指针指向arr和&arr，在+1时的区别
+
+![Screenshot 2024-09-16 at 9.05.29 AM](C笔记.assets/Screenshot 2024-09-16 at 9.05.29 AM.png)
+
+~~~c
+#include <stdio.h>
+
+int main()
+{
+    int arr[] = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+    printf("%zu\n", sizeof(arr));
+    printf("%p\n", arr);
+    printf("%p\n", &arr);
+    printf("移动后：\n");
+    printf("%p\n", arr + 1);
+    printf("%p\n", &arr + 1);
+    return 0;
+}
+~~~
+
+~~~
+40
+0x16fabb020
+0x16fabb020
+移动后：
+0x16fabb024
+0x16fabb048
+~~~
+
+
+
+另一种方式遍历数组，如下所示。但是只能得到前两个数据，原因是在使用arr1数组名进行计算的时候，退化为指向第一个元素的指针，此时不再表示数组整体了。所以计算结果为8个字节除以4个字节，length长度永远为2
+
+```c
+#include <stdio.h>
+
+int main()
+{
+    // 另一种便利数组的方式
+    int arr1[3] = {1, 2, 3};
+    int arr2[2] = {4, 5};
+    int arr3[4] = {6, 7, 8};
+
+    int *arr[3] = {arr1, arr2, arr3};
+    for (int i = 0; i < 3; i++)
+    {
+        int length = sizeof(arr[i]) / sizeof(int);
+        for (int j = 0; j < length; j++)
+        {
+            printf("%d ", arr[i][j]);
+        }
+        printf("\n");
+    }
+    return 0;
+}
+```
+
+```
+1 2 
+4 5 
+6 7 
+```
+
+改进：
+
+```c
+#include <stdio.h>
+
+int main()
+{
+    // 另一种便利数组的方式
+    int arr1[3] = {1, 2, 3};
+    int arr2[2] = {4, 5};
+    int arr3[4] = {6, 7, 8};
+
+    // 预先计算每一个数组的真实长度
+    int len1 = sizeof(arr1) / sizeof(arr1[0]);
+    int len2 = sizeof(arr2) / sizeof(arr2[0]);
+    int len3 = sizeof(arr3) / sizeof(arr3[0]);
+    // 再定义一个数组，装所有数组的长度
+    int lenArr[3] = {len1, len2, len3};
+
+    int *arr[3] = {arr1, arr2, arr3};
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < lenArr[i]; j++)
+        {
+            printf("%d ", arr[i][j]);
+        }
+        printf("\n");
+    }
+    return 0;
+}
+```
+
+```
+1 2 3 
+4 5 
+6 7 8 0 
+```
+
+
+
+## 二维数组
+
+
+
+ ![Screenshot 2024-09-16 at 9.53.26 AM](C笔记.assets/Screenshot 2024-09-16 at 9.53.26 AM.png)
+
+```c
+#include <stdio.h>
+
+int main()
+{
+
+    int arr[3][5] = {
+        {1, 2, 3, 4, 5},
+        {11, 22, 33, 44, 55},
+        {111, 222, 333, 444, 555}};
+
+    int(*p)[5] = arr;
+
+    printf("%p\n", arr);
+    printf("%p\n", arr + 1);
+
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            printf("%d ", *(*p + j));
+        }
+        p++;
+        printf("\n");
+    }
+
+    return 0;
+}
+```
+
+
+
+## 函数指针
+
+```c
+#include <stdio.h>
+void method1();
+int method2(int a, int b);
+
+int main()
+{
+    void (*p1)() = method1;
+    int (*p2)(int, int) = method2;
+
+    p1();
+    int res = p2(32, 99);
+    printf("%d\n", res);
+    return 0;
+}
+
+void method1()
+{
+    printf("method1\n");
+}
+
+int method2(int a, int b)
+{
+    printf("method2\n");
+    return a + b;
+}
+```
+
+```
+method1
+method2
+131
+```
+
+
+
+```c
+#include <stdio.h>
+/*
+定义加减乘除四个函数
+键盘录入三个数字
+前两个代表计算数字
+第三个代表调用的函数
+*/
+int add(int a, int b);
+int subtract(int a, int b);
+int mutiply(int a, int b);
+int divide(int a, int b);
+
+int main()
+{
+    // 专业术语：函数指针数组
+    int (*arr[4])(int, int) = {add, subtract, mutiply, divide};
+
+    printf("请录入两个数字参与计算\n");
+    int num1;
+    int num2;
+    scanf("%d%d", &num1, &num2);
+    printf("%d %d\n", num1, num2);
+    printf("请录入一个数字进行计算\n");
+    int operator;
+    scanf("%d", &operator);
+    int res = (arr[operator-1])(num1,num2);
+    printf("%d\n", res);
+    return 0;
+}
+
+int add(int a, int b)
+{
+    return a + b;
+}
+
+int subtract(int a, int b)
+{
+    return a - b;
+}
+
+int mutiply(int a, int b)
+{
+    return a * b;
+}
+int divide(int a, int b)
+{
+    return a / b;
+}
+```
+
+```
+请录入两个数字参与计算
+45 21
+45 21请录入一个数字进行计算
+1
+66
+```
 
