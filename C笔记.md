@@ -660,3 +660,229 @@ int divide(int a, int b)
 66
 ```
 
+
+
+# 字符串
+
+## 字符串数组
+
+```c
+#include <stdio.h>
+
+int main()
+{
+    char arr[3][100] = {
+        "zhangsan",
+        "lisi",
+        "wangwu"};
+    char(*p)[100] = arr;
+    for (int i = 0; i < 3; i++)
+    {
+        printf("%s\n", *p);
+        p++;
+    }
+    return 0;
+}
+```
+
+```
+zhangsan
+lisi
+wangwu
+```
+
+
+
+## 常见函数
+
+* strlen：获取字符串的长度
+* strcat：拼接两个字符串
+* strcpy：复制字符串
+* strcmp：比较两个字符串
+* strlwr：将字符串变成小写
+* strupr：将字符串变成大写
+
+
+
+
+
+
+
+
+
+# 结构体
+
+## 作为函数参数传递
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+typedef struct
+{
+    char name[100];
+    int age;
+} Stu;
+
+void method(Stu *student);
+
+int main()
+{
+    Stu stu;
+    strcpy(stu.name, "Tom");
+    stu.age = 19;
+    method(&stu);
+    printf("%s\n", stu.name);
+    printf("%d\n", stu.age);
+    return 0;
+}
+
+void method(Stu *student)
+{
+    student->age = 300;
+}
+```
+
+```
+Tom
+300
+```
+
+
+
+
+
+## 结构体嵌套
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+typedef struct
+{
+    char tel[100];
+    char email[100];
+} Message;
+
+typedef struct
+{
+    char name[100];
+    int age;
+    Message msg;
+} Student;
+
+int main()
+{
+    Student stu;
+    strcpy(stu.name, "Tom");
+    stu.age = 33;
+    strcpy(stu.msg.tel, "134221244");
+    strcpy(stu.msg.email, "hello@gmail.com");
+    printf("%s\n", stu.name);
+    printf("%d\n", stu.age);
+    printf("%s\n", stu.msg.tel);
+    printf("%s\n", stu.msg.email);
+    return 0;
+}
+```
+
+```
+Tom
+33
+134221244
+hello@gmail.com
+```
+
+
+
+
+
+## 结构体内存对齐
+
+下面这个是8+1+4+1=14个字节吗？不是，其实是24个字节
+
+![Screenshot 2024-09-16 at 8.45.06 PM](C笔记.assets/Screenshot 2024-09-16 at 8.45.06 PM.png)
+
+下面这个解析非常重要！
+
+![Screenshot 2024-09-16 at 8.49.35 PM](C笔记.assets/Screenshot 2024-09-16 at 8.49.35 PM.png)
+
+```c
+#include <stdio.h>
+
+typedef struct
+{
+    char tel[100];
+    char email[100];
+} Message;
+
+typedef struct
+{
+    char name[100];
+    int age;
+    Message msg;
+} Student;
+
+typedef struct
+{
+    double a;
+    char b;
+    int c;
+    char d;
+} Demo;
+
+int main()
+{
+    Student stu;
+    printf("%zu\n", sizeof(stu));
+
+    Demo demo;
+    printf("%zu\n", sizeof(demo));
+
+    return 0;
+}
+```
+
+```
+304
+24
+```
+
+
+
+
+
+## 共同体
+
+
+
+```c
+#include <stdio.h>
+
+union MoneyType
+{
+    int moneyi;
+    double moneyd;
+    char moneystr[100];
+};
+
+int main()
+{
+    union MoneyType money;
+    // 每次只能赋一个值
+    money.moneyi = 55555;
+
+    printf("%d\n", money.moneyi);
+
+    return 0;
+}
+```
+
+
+
+
+
+
+
+# 文件
+
