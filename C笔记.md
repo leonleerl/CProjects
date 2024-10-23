@@ -886,3 +886,351 @@ int main()
 
 # 文件
 
+读
+
+```c
+#include <stdio.h>
+
+int main() {
+    FILE *file = fopen("example.txt", "r"); // 打开文件以只读方式
+    if (file == NULL) {
+        perror("无法打开文件");
+        return 1;
+    }
+
+    char line[256]; // 用于存储每一行的字符数组
+    while (fgets(line, sizeof(line), file) != NULL) {
+        printf("%s", line); // 输出读取到的每一行
+    }
+
+    fclose(file); // 关闭文件
+    return 0;
+}
+```
+
+写
+
+```c
+#include <stdio.h>
+
+int main() {
+    FILE *file = fopen("example.txt", "w");
+
+    if (file == NULL) {
+        perror("Cannot open file");
+        return 1;
+    }
+
+    // 使用 fputs() 写入字符串
+    fputs("This is a simple line.\n", file);
+
+    // 使用 fprintf() 写入格式化内容
+    int number = 42;
+    fprintf(file, "The number is: %d\n", number);
+
+    fclose(file);
+    return 0;
+}
+```
+
+
+
+
+
+# 期末补充
+
+
+
+预处理，编译，汇编，链接
+
+Preprocessing, compilation, assembly, linking
+
+预处理（后会生成main.i）：
+
+* GCC会处理所有#开头的文件，宏（Macro）替换
+* #ifdef 有选择性地编译部分代码
+
+编译（后会生成main.s）：
+
+* 将C代码转换为汇编代码。语法分析，语义分析，优化等（参考编译原理）
+
+汇编（后会生成main.o）：
+
+* 将编译器生成的汇编代码转为机器码
+
+链接：
+
+* 将目标文件main.o和标准库或其他自定义库连接起来，形成一种可执行文件
+
+![Screenshot 2024-10-23 at 3.11.41 pm](C笔记.assets/Screenshot 2024-10-23 at 3.11.41 pm.png)
+
+
+
+计算机的主要组件：
+
+* CPU
+* RAM
+* 
+
+CPU与内存的交互：
+
+* 指令和数据获取：CPU通过MAR和I/O地址寄存器等从内存获取指令和数据
+* 操作系统角色：管理。确保任务调度使CPU正常工作，尤其是在I/O操作完成时
+
+内存层次结构
+
+* 寄存器
+* Cache
+* RAM
+* Secondary Storage
+
+
+
+Stalling提出的5-state模型
+
+![Screenshot 2024-10-22 at 3.51.45 pm](C笔记.assets/Screenshot 2024-10-22 at 3.51.45 pm.png)
+
+
+
+![Screenshot 2024-10-22 at 3.43.39 pm](C笔记.assets/Screenshot 2024-10-22 at 3.43.39 pm.png)
+
+![Screenshot 2024-10-22 at 3.43.23 pm](C笔记.assets/Screenshot 2024-10-22 at 3.43.23 pm.png)
+
+
+
+| **Null → New**              | a new process is requested.                  |
+| --------------------------- | -------------------------------------------- |
+| **New → Ready**             | resources are allocated for the new process. |
+| **Ready → Running**         | a process is given a time quantum.           |
+| **Running → Ready**         | a process's execution time quantum expires.  |
+| **Running → Blocked**       | a process requests slow I/O.                 |
+| **Blocked → Ready**         | an I/O interrupt signals that I/O is ready.  |
+| **Running → Exit**          | normal or abnormal process termination.      |
+| **Ready or Blocked → Exit** | external process termination requested.      |
+
+
+
+Process Termination:
+[Stallings](http://www.amazon.com/Operating-Systems-Internals-Principles-Edition/dp/0133805913/ref=dp_ob_title_bk) summarises typical reasons why a process will **terminate**:
+
+- normal termination,
+- execution time-limit exceeded,
+- a resource requested is unavailable,
+- an arithmetic error (division by zero),
+- a memory access violation,
+- an invalid request of memory or a held resource,
+- an operating system or parent process request, or
+- its parent process has terminated.
+
+
+
+### **内中断 (Internal Interrupt)**
+
+**定义**：内中断是由**CPU 内部事件**引发的，通常与程序的执行过程直接相关。这些中断由处理器或程序自动触发。
+
+#### **常见类型 (Common Types)**：
+
+1. 算术溢出 (Arithmetic Overflow)
+
+   ：当一个算术操作的结果超出 CPU 所能表示的范围时，会引发算术溢出中断。
+
+   - **Example**: Division by zero or exceeding the storage size of a register.
+
+2. 非法操作码 (Illegal Opcode)
+
+   ：当 CPU 试图执行一条未知的或无效的指令时，会引发此中断。
+
+   - **Example**: Attempting to execute an undefined machine code.
+
+3. 除零错误 (Divide by Zero)
+
+   ：当除数为零时，CPU 会引发除零错误中断。
+
+   - **Example**: An instruction tries to divide a value by zero.
+
+4. 页面错误 (Page Fault)
+
+   ：当程序试图访问未在物理内存中的页面时，会引发页面错误中断。
+
+   - **Example**: The operating system handles the situation by loading the required page into memory.
+
+### **外中断 (External Interrupt)**
+
+**定义**：外中断是由**外部事件**引发的，通常与系统外部硬件有关。这些中断由硬件设备或外部信号触发。
+
+#### **常见类型 (Common Types)**：
+
+1. I/O 设备中断 (I/O Device Interrupt)
+
+   ：当外部设备（例如硬盘、打印机）完成 I/O 操作时，会向 CPU 发送中断信号。
+
+   - **Example**: A hard disk signals that it has completed reading data.
+
+2. 定时器中断 (Timer Interrupt)
+
+   ：由系统的定时器触发，通常用于实现多任务处理和时间管理。
+
+   - **Example**: A timer generates an interrupt every millisecond to switch between tasks.
+
+3. 电源故障中断 (Power Failure Interrupt)
+
+   ：当系统电源即将失效时，会触发此中断以便系统能够安全关闭。
+
+   - **Example**: A power supply unit signals the system to save data before shutdown.
+
+4. 外部信号中断 (External Signal Interrupt)
+
+   ：由外部按钮（如重启键或其他控制按钮）触发。
+
+   - **Example**: Pressing the reset button on a computer.
+
+
+
+内中断通常不会导致进程进入阻塞态，而外中断在某些情况下可能会导致进程进入阻塞态，尤其是涉及到等待外部资源的情况。
+
+
+
+
+
+执行fork后，栈内存和堆内存的变化
+
+```c
+#include <stdio.h>
+#include <unistd.h>
+
+int main() {
+    int a = 5;
+
+    pid_t pid = fork();
+
+    if (pid == 0) { // 子进程
+        a += 5;
+        printf("Child process, a = %d\n", a); // 输出: Child process, a = 10
+    } else { // 父进程
+        a -= 5;
+        printf("Parent process, a = %d\n", a); // 输出: Parent process, a = 0
+    }
+
+    return 0;
+}
+```
+
+输出：
+
+Parent process, a = 0
+Child process, a = 10
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main() {
+    int *ptr = malloc(sizeof(int));
+    *ptr = 10;
+
+    pid_t pid = fork();
+
+    if (pid == 0) { // 子进程
+        *ptr += 10;
+        printf("Child process, *ptr = %d\n", *ptr); // 输出: Child process, *ptr = 20
+    } else { // 父进程
+        *ptr -= 5;
+        printf("Parent process, *ptr = %d\n", *ptr); // 输出: Parent process, *ptr = 5
+    }
+
+    free(ptr); // 父进程和子进程需要各自释放堆内存
+
+    return 0;
+}
+```
+
+输出：
+
+Parent process, *ptr = 5
+Child process, *ptr = 20
+
+
+
+**栈内存**：`fork()` 后，子进程的栈内存是父进程的拷贝，父子进程的栈是独立的。修改局部变量的值不会相互影响。
+
+**堆内存**：`fork()` 后，父子进程共享堆内存的副本，堆中的数据最初相同，但父子进程的堆也是独立的。它们的修改不会相互影响。
+
+
+
+
+
+Requirements of 内存管理
+
+sharing：
+
+允许进程共享内存
+
+relocation：
+
+进程被swapped out时，不太可能将该进程完全换回相同的物理位置（地址）
+
+protection：
+
+保护进程不受其他影响。内存保护由processor（hardware）执行，而不是operating system（software）
+
+
+
+动态分区算法：
+
+First- fit：找到该进程下一个未使用的内存块，从地址0开始搜索
+
+Best-fit：找到该进程最小的位置用的内存块
+
+Next-fit：记住最后一个内存分配的位置k，下一次开始从k搜索
+
+
+
+三种地址：
+
+logical address：is a reference to a memory location independent of any current assignment of data to main memory.
+
+relative address：is a logical address expressed relative to a fixed (logical) location, such as the beginning of the process's image.
+
+physical address：is an actual location in main (physical) memory.
+
+
+
+
+
+分页的优点：
+
+* More (pieces of) processes may be maintained in main physical memory (either **Ready** or **Running**).
+
+* Most processes do not require all of their memory before they can execute: memory may be loaded on demand.
+* If the swapping space is larger than the physical memory, any single process may now demand more memory than the amount of physical memory installed.
+
+
+
+**make**
+
+| $@   | This will always expand to the current target.               |
+| ---- | ------------------------------------------------------------ |
+| $<   | The name of the first dependency. This is the first item listed after the colon. |
+| $?   | The names of all the dependencies that are newer than the target. |
+
+~~~makefile
+.PHONY: clean all
+CFLAGS = -Wall -g -O2
+targets = hello world
+sources = main.c message.c
+objects = main.o message.o
+
+all: $(targets)
+	@echo "all done"
+
+$(targets): $(objects)
+	gcc $(CFLAGS) $(objects) -o $@
+
+%.o: %.c
+	gcc $(CFLAGS) -c $<
+
+clean:
+	-rm -rf *.o hello
+~~~
+
