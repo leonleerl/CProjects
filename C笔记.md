@@ -525,11 +525,7 @@ int main()
 
 
 
-## 二维数组
-
-
-
- ![Screenshot 2024-09-16 at 9.53.26 AM](C笔记.assets/Screenshot 2024-09-16 at 9.53.26 AM.png)
+## 二维数组 ![Screenshot 2024-09-16 at 9.53.26 AM](C笔记.assets/Screenshot 2024-09-16 at 9.53.26 AM.png)
 
 ```c
 #include <stdio.h>
@@ -1158,6 +1154,8 @@ Child process, *ptr = 20
 
 
 
+页面大小=页内偏移量
+
 
 
 Requirements of 内存管理
@@ -1178,7 +1176,7 @@ protection：
 
 动态分区算法：
 
-First- fit：找到该进程下一个未使用的内存块，从地址0开始搜索
+First-fit：找到该进程下一个未使用的内存块，从地址0开始搜索
 
 Best-fit：找到该进程最小的位置用的内存块
 
